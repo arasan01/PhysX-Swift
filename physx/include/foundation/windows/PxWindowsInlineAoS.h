@@ -33,7 +33,7 @@
 #error Vector intrinsics should not be included when using scalar implementation.
 #endif
 
-#if PX_CLANG && PX_WIN64
+#if PX_CLANG_CL
 #include "../unix/sse2/PxUnixSse2InlineAoS.h"
 #else
 
@@ -3174,7 +3174,7 @@ PX_FORCE_INLINE Vec4V V4ConvertFromI32V(const VecI32V in)
 } // namespace aos
 } // namespace physx
 
-#endif // PX_CLANG && PX_WIN64
+#endif // PX_CLANG_CL
 
 #endif
 

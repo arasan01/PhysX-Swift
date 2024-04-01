@@ -29,7 +29,7 @@
 #ifndef PX_WINDOWS_AOS_H
 #define PX_WINDOWS_AOS_H
 
-#if PX_CLANG && PX_WIN64
+#if PX_CLANG_CL
 #include "../unix/sse2/PxUnixSse2AoS.h"
 #else
 
@@ -143,7 +143,7 @@ struct Mat44V
 } // namespace physx
 #endif
 
-#endif // PX_CLANG && PX_WIN64
+#endif // PX_CLANG_CL
 
 #endif
 
