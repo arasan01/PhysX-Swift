@@ -190,6 +190,9 @@ define anything not defined on this platform to 0
 #ifndef PX_VMX
 	#define PX_VMX 0
 #endif
+#ifndef PX_CLANG_CL
+	#define PX_CLANG_CL 0
+#endif
 
 /*
 define anything not defined through the command line to 0
@@ -343,6 +346,8 @@ Restrict macro
 */
 #if defined(__CUDACC__)
 	#define PX_RESTRICT __restrict__
+#elif PX_CLANG_CL
+	#define PX_RESTRICT
 #else
 	#define PX_RESTRICT __restrict
 #endif
@@ -498,7 +503,7 @@ PX_CUDA_CALLABLE PX_INLINE void PX_UNUSED(T const&)
 	};
 #endif
 // clang (as of version 3.9) cannot align doubles on 8 byte boundary  when compiling for Intel 32 bit target
-#if !PX_APPLE_FAMILY && !PX_EMSCRIPTEN && !(PX_CLANG && PX_X86)
+#if !PX_APPLE_FAMILY && !PX_EMSCRIPTEN && !((PX_CLANG || PX_CLANG_CL) && PX_X86)
 	PX_COMPILE_TIME_ASSERT(PX_OFFSET_OF(PxPackValidation, a) == 8);
 #endif
 

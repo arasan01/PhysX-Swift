@@ -24,7 +24,7 @@
 //
 // Copyright (c) 2008-2023 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 // PT: SQ-API LEVEL 3 (Level 1 = SqPruner.h, Level 2 = SqManager/SqPrunerData)
 // PT: this file is part of a "high-level" set of files within Sq. The SqPruner API doesn't rely on them.
@@ -239,14 +239,14 @@ struct GeomQueryAny
 
 			const PxVec3& unitDir = input.getDir();
 			PxSweepHit& sweepHit = reinterpret_cast<PxSweepHit&>(hits[0]);
-			
+
 			// if we don't start inside the AABB box, offset the start pos, because of precision issues with large maxDist
 			const bool offsetPos = (tnear > GU_RAY_SURFACE_OFFSET);
 			const PxReal offset = offsetPos ? (tnear - GU_RAY_SURFACE_OFFSET) : 0.0f;
 			const PxVec3 offsetVec(offsetPos ? (unitDir*offset) : PxVec3(0.0f));
 			// we move the geometry we sweep against, so that we avoid the Gu::Capsule/Box recomputation
 			const PxTransform pose1Offset(pose1.p - offsetVec, pose1.q);
-            
+
 			const PxReal distance = PxMin(tfar, shrunkMaxDistance) - offset;
 			const PxReal inflation = input.inflation;
 			PX_CHECK_AND_RETURN_VAL(pose0.isValid(), "PxScene::sweep(): pose0 is not valid.", 0);
@@ -278,7 +278,7 @@ struct GeomQueryAny
 					retVal = PxU32(func(geom1, pose1Offset, static_cast<const PxCapsuleGeometry&>(geom0), pose0, sd->getGuCapsule(), unitDir, distance, sweepHit, hitFlags, inflation, context));
 				}
 				break;
-	
+
 				case PxGeometryType::eBOX:
 				{
 					const bool precise = hitFlags & PxHitFlag::ePRECISE_SWEEP;
@@ -286,7 +286,7 @@ struct GeomQueryAny
 					retVal = PxU32(func(geom1, pose1Offset, static_cast<const PxBoxGeometry&>(geom0), pose0, sd->getGuBox(), unitDir, distance, sweepHit, hitFlags, inflation, context));
 				}
 				break;
-	
+
 				case PxGeometryType::eCONVEXMESH:
 				{
 					const PxConvexMeshGeometry& convexGeom = static_cast<const PxConvexMeshGeometry&>(geom0);
@@ -467,7 +467,7 @@ struct MultiQueryCallback : public PrunerRaycastCallback, public PrunerOverlapCa
 				{
 					mReportTouchesAgain = mHitCall.processTouches(mHitCall.touches, mHitCall.nbTouches);
 					if(!mReportTouchesAgain)
-						return false; // optimization - buffer is full 
+						return false; // optimization - buffer is full
 					else
 						mHitCall.nbTouches = 0; // reset nbTouches so we can continue accumulating again
 				}
@@ -595,7 +595,7 @@ struct MultiQueryCallback : public PrunerRaycastCallback, public PrunerOverlapCa
 			if(mNoBlock && hitType==PxQueryHitType::eBLOCK)
 				hitType = PxQueryHitType::eTOUCH;
 
-			PX_WARN_ONCE_IF(HitTypeSupport<HitType>::IsOverlap && hitType == PxQueryHitType::eBLOCK, 
+			PX_WARN_ONCE_IF(HitTypeSupport<HitType>::IsOverlap && hitType == PxQueryHitType::eBLOCK,
 				"eBLOCK returned from user filter for overlap() query. This may cause undesired behavior. "
 				"Consider using PxQueryFlag::eNO_BLOCK for overlap queries.");
 
@@ -856,7 +856,7 @@ bool SceneQueries::multiQuery(
 		bool again = doStatics ? staticPruner->raycast(input.getOrigin(), input.getDir(), pcb.mShrunkDistance, pcb) : true;
 		if(!again)
 			return hits.hasAnyHits();
-		
+
 		if(doDynamics)
 			again = dynamicPruner->raycast(input.getOrigin(), input.getDir(), pcb.mShrunkDistance, pcb);
 
@@ -875,7 +875,7 @@ bool SceneQueries::multiQuery(
 		bool again = doStatics ? staticPruner->overlap(sd, pcb) : true;
 		if(!again) // && (filterData.flags & PxQueryFlag::eANY_HIT))
 			return hits.hasAnyHits();
-		
+
 		if(doDynamics)
 			again = dynamicPruner->overlap(sd, pcb);
 
@@ -896,20 +896,20 @@ bool SceneQueries::multiQuery(
 		bool again = doStatics ? staticPruner->sweep(sd, input.getDir(), pcb.mShrunkDistance, pcb) : true;
 		if(!again)
 			return hits.hasAnyHits();
-		
+
 		if(doDynamics)
 			again = dynamicPruner->sweep(sd, input.getDir(), pcb.mShrunkDistance, pcb);
 
 		if(again && compoundPruner)
 			again = compoundPruner->sweep(sd, input.getDir(), pcb.mShrunkDistance, pcb, compoundPrunerQueryFlags);
-		
+
 		cbr.again = again; // update the status to avoid duplicate processTouches()
 		return hits.hasAnyHits();
 	}
 }
 
 //explicit template instantiation
-template bool SceneQueries::multiQuery<PxRaycastHit>(const MultiQueryInput&, PxHitCallback<PxRaycastHit>&, PxHitFlags, const PxQueryCache*, const PxQueryFilterData&, PxQueryFilterCallback*) const; 
+template bool SceneQueries::multiQuery<PxRaycastHit>(const MultiQueryInput&, PxHitCallback<PxRaycastHit>&, PxHitFlags, const PxQueryCache*, const PxQueryFilterData&, PxQueryFilterCallback*) const;
 template bool SceneQueries::multiQuery<PxOverlapHit>(const MultiQueryInput&, PxHitCallback<PxOverlapHit>&, PxHitFlags, const PxQueryCache*, const PxQueryFilterData&, PxQueryFilterCallback*) const;
 template bool SceneQueries::multiQuery<PxSweepHit>(const MultiQueryInput&, PxHitCallback<PxSweepHit>&, PxHitFlags, const PxQueryCache*, const PxQueryFilterData&, PxQueryFilterCallback*) const;
 
@@ -1021,7 +1021,7 @@ static bool doQueryVsCached(const PrunerHandle handle, PxU32 prunerIndex, const 
 		transform = ppd.mTransform;
 	}
 	PxReal dummyDist;
-	
+
 	bool againAfterCache;
 	if(HitTypeSupport<HitType>::IsSweep)
 	{
