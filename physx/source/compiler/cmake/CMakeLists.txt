@@ -24,7 +24,8 @@
 ##
 ## Copyright (c) 2008-2023 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.29)
+cmake_policy(SET CMP0156 NEW)
 
 project(PhysX C CXX)
 

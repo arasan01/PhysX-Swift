@@ -1,4 +1,8 @@
 bin/
 compiler/linux-*
+!compiler/vc17win64/Directory.build.props
 compiler/vc*
+compiler/ninja*
+compiler/public/.vs
+compiler/public/out
 include/PxConfig.h

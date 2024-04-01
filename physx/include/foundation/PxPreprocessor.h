@@ -53,26 +53,8 @@ All definitions have a value of 1 or 0, use '#if' instead of '#ifdef'.
 /**
 Compiler defines, see http://sourceforge.net/p/predef/wiki/Compilers/
 */
-#if defined(_MSC_VER)
-#if _MSC_VER >= 1920
-	#define PX_VC 16
-#elif _MSC_VER >= 1910
-	#define PX_VC 15
-#elif _MSC_VER >= 1900
-	#define PX_VC 14
-#elif _MSC_VER >= 1800
-	#define PX_VC 12
-#elif _MSC_VER >= 1700
-	#define PX_VC 11
-#elif _MSC_VER >= 1600
-	#define PX_VC 10
-#elif _MSC_VER >= 1500
-	#define PX_VC 9
-#else
-	#error "Unknown VC version"
-#endif
-#elif defined(__clang__)
-#define PX_CLANG 1
+#if defined(__clang__)
+	#define PX_CLANG 1
 	#if defined (__clang_major__) 
 		#define PX_CLANG_MAJOR __clang_major__
 	#elif defined (_clang_major)
@@ -80,6 +62,24 @@ Compiler defines, see http://sourceforge.net/p/predef/wiki/Compilers/
 	#else
 		#define PX_CLANG_MAJOR 0
 	#endif	
+#elif defined(_MSC_VER)
+	#if _MSC_VER >= 1920
+		#define PX_VC 16
+	#elif _MSC_VER >= 1910
+		#define PX_VC 15
+	#elif _MSC_VER >= 1900
+		#define PX_VC 14
+	#elif _MSC_VER >= 1800
+		#define PX_VC 12
+	#elif _MSC_VER >= 1700
+		#define PX_VC 11
+	#elif _MSC_VER >= 1600
+		#define PX_VC 10
+	#elif _MSC_VER >= 1500
+		#define PX_VC 9
+	#else
+		#error "Unknown VC version"
+	#endif // MSC_VER Switch
 #elif defined(__GNUC__) // note: __clang__ implies __GNUC__
 	#define PX_GCC 1
 #else

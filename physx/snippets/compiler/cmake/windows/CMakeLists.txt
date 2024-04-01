@@ -37,7 +37,7 @@ IF(NOT DEFINED TINYXML2_PATH)
 ENDIF()
 
 IF(MSVC_VERSION LESS_EQUAL 1900)
-	SET(SNIPPET_WARNING_DISABLES "/wd4714")
+	SET(SNIPPET_WARNING_DISABLES "/wd4714 /wd4068")
 ENDIF()
 
 # Get the CXX Flags from the Cached variables set by the PhysX CMakeLists
@@ -63,7 +63,7 @@ SET(SLN_PHYSXDEVICE_PATH "$ENV{PM_PhysXDevice_PATH}/bin/x86/")
 
 # Include ConfigureFileMT to expose that function
 INCLUDE(ConfigureFileMt)
-	
+
 SET(SNIPPET_RENDER_ENABLED 1)
 
 # Include all of the projects

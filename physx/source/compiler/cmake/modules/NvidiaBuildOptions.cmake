@@ -166,11 +166,11 @@ ELSE()
 ENDIF()
 
 # Can no longer just use LIBPATH_SUFFIX since it depends on build type
-IF(CMAKE_CL_64)
-	SET(RESOURCE_LIBPATH_SUFFIX "x64")
-ELSE(CMAKE_CL_64)
-	SET(RESOURCE_LIBPATH_SUFFIX "x86")
-ENDIF(CMAKE_CL_64)
+IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    SET(RESOURCE_LIBPATH_SUFFIX "x64")
+ELSE()
+    SET(RESOURCE_LIBPATH_SUFFIX "x86")
+ENDIF()
 
 
 # removes characters from the version string and leaves just numbers

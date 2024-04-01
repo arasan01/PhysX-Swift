@@ -153,7 +153,8 @@ class CMakePreset:
         vs_versions = {
             'vc15': '\"Visual Studio 15 2017\"',
             'vc16': '\"Visual Studio 16 2019\"',
-            'vc17': '\"Visual Studio 17 2022\"'
+            'vc17': '\"Visual Studio 17 2022\"',
+            'clang': 'unused',
         }
 
         # Visual studio
@@ -176,6 +177,9 @@ class CMakePreset:
                 outString = outString + ' -Ax64'
             outString = outString + ' -DTARGET_BUILD_PLATFORM=windows'
             outString = outString + ' -DPX_OUTPUT_ARCH=x86'
+            outString = outString + ' -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
+            outString = outString + ' -DCMAKE_C_COMPILER:FILEPATH=' + os.environ['USERPROFILE'] + '/AppData/Local/Programs/Swift/Toolchains/5.10.0+Asserts/usr/bin/clang-cl.exe'
+            outString = outString + ' -DCMAKE_CXX_COMPILER:FILEPATH=' + os.environ['USERPROFILE'] + '/AppData/Local/Programs/Swift/Toolchains/5.10.0+Asserts/usr/bin/clang-cl.exe'
             return outString
         elif self.targetPlatform == 'switch64':
             outString = outString + ' -DTARGET_BUILD_PLATFORM=switch'

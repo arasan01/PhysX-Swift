@@ -33,6 +33,10 @@
 #error Vector intrinsics should not be included when using scalar implementation.
 #endif
 
+#if PX_CLANG && PX_WIN64
+#include "../unix/sse2/PxUnixSse2InlineAoS.h"
+#else
+
 #include "../PxVecMathSSE.h"
 
 namespace physx
@@ -62,7 +66,7 @@ PX_FORCE_INLINE bool isValidFloatV(const FloatV a)
 	{
 		return true;
 	}
-	
+
 	if (
 		(PxAbs((x - y) / x) < FLOAT_COMPONENTS_EQUAL_THRESHOLD) &&
 		(PxAbs((x - z) / x) < FLOAT_COMPONENTS_EQUAL_THRESHOLD) &&
@@ -101,7 +105,7 @@ PX_FORCE_INLINE bool isAligned16(void* a)
 #define ASSERT_ISFINITELENGTH(a) //PX_ASSERT(isFiniteLength(a))
 #else
 #define ASSERT_ISVALIDVEC3V(a)
-#define ASSERT_ISVALIDFLOATV(a) 
+#define ASSERT_ISVALIDFLOATV(a)
 #define ASSERT_ISALIGNED16(a)
 #define ASSERT_ISFINITELENGTH(a)
 #endif
@@ -1144,7 +1148,7 @@ PX_FORCE_INLINE Vec3V V3Abs(const Vec3V a)
 	return V3Max(a, V3Neg(a));
 }
 
-PX_FORCE_INLINE FloatV V3Dot(const Vec3V a, const Vec3V b)	
+PX_FORCE_INLINE FloatV V3Dot(const Vec3V a, const Vec3V b)
 {
 	ASSERT_ISVALIDVEC3V(a);
 	ASSERT_ISVALIDVEC3V(b);
@@ -1153,7 +1157,7 @@ PX_FORCE_INLINE FloatV V3Dot(const Vec3V a, const Vec3V b)
 	const __m128 t1 = _mm_shuffle_ps(t0, t0, _MM_SHUFFLE(1,0,3,2));	//	ay*by | ax*bx | aw*bw | az*bz
 	const __m128 t2 = _mm_add_ps(t0, t1);							//	ay*by + aw*bw | ax*bx + az*bz | aw*bw + ay*by | az*bz + ax*bx
 	const __m128 t3 = _mm_shuffle_ps(t2, t2, _MM_SHUFFLE(2,3,0,1));	//	ax*bx + az*bz | ay*by + aw*bw | az*bz + ax*bx | aw*bw + ay*by
-	return _mm_add_ps(t3, t2);										//	ax*bx + az*bz + ay*by + aw*bw 
+	return _mm_add_ps(t3, t2);										//	ax*bx + az*bz + ay*by + aw*bw
 																	//	ay*by + aw*bw + ax*bx + az*bz
 																	//	az*bz + ax*bx + aw*bw + ay*by
 																	//	aw*bw + ay*by + az*bz + ax*bx
@@ -1483,7 +1487,7 @@ PX_FORCE_INLINE Vec3V V3Cos(const Vec3V a)
 	Result = V3ScaleAdd(V20, C10, Result);
 	Result = V3ScaleAdd(V22, C11, Result);
 
-	ASSERT_ISVALIDVEC3V(Result); 
+	ASSERT_ISVALIDVEC3V(Result);
 	return Result;
 }
 
@@ -2970,7 +2974,7 @@ PX_FORCE_INLINE VecI32V VecI32V_Sel(const BoolV c, const VecI32VArg a, const Vec
 PX_FORCE_INLINE VecShiftV VecI32V_PrepareShift(const VecI32VArg shift)
 {
 	VecShiftV preparedShift;
-	preparedShift.shift = _mm_or_ps(_mm_andnot_ps(BTFFF(), VecI32V_Zero()), _mm_and_ps(BTFFF(), shift)); 
+	preparedShift.shift = _mm_or_ps(_mm_andnot_ps(BTFFF(), VecI32V_Zero()), _mm_and_ps(BTFFF(), shift));
 	return preparedShift;
 }
 
@@ -3169,6 +3173,8 @@ PX_FORCE_INLINE Vec4V V4ConvertFromI32V(const VecI32V in)
 
 } // namespace aos
 } // namespace physx
+
+#endif // PX_CLANG && PX_WIN64
 
 #endif
 

@@ -29,6 +29,10 @@
 #ifndef PX_WINDOWS_AOS_H
 #define PX_WINDOWS_AOS_H
 
+#if PX_CLANG && PX_WIN64
+#include "../unix/sse2/PxUnixSse2AoS.h"
+#else
+
 // no includes here! this file should be included from PxAOS.h only!!!
 
 #if !COMPILE_VECTOR_INTRINSICS
@@ -138,6 +142,8 @@ struct Mat44V
 #if !PX_DOXYGEN
 } // namespace physx
 #endif
+
+#endif // PX_CLANG && PX_WIN64
 
 #endif
 
