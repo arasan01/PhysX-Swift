@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <LLVMInstallDir>%USERPROFILE%\AppData\Local\Programs\Swift\Toolchains\5.10.0+Asserts\usr</LLVMInstallDir>
+    <LLVMToolsVersion>17.0.6</LLVMToolsVersion>
+  </PropertyGroup>
+</Project>

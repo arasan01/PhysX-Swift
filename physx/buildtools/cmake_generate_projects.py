@@ -161,6 +161,9 @@ class CMakePreset:
         if self.compiler in vs_versions:
             generator = '-G \"Ninja Multi-Config\"' if self.generator == 'ninja' else '-G ' + vs_versions[self.compiler]
             outString += generator
+            if self.generator != 'ninja':
+                # Visual Studio Default Toolset
+                outString += ' -TClangCL'
         # mac
         elif self.compiler == 'xcode':
             outString = outString + '-G Xcode'
@@ -279,6 +282,19 @@ def presetProvided(pName):
         os.system(cmakeExec + ' \"' +
                   os.environ['PHYSX_ROOT_DIR'] + '/compiler/' + cmakeMasterDir + '\"' + cmakeParams)
         os.chdir(os.environ['PHYSX_ROOT_DIR'])
+        # Output Directory.build.props, required for Visual Studio with clang-cl
+        if parsedPreset.compiler in ['vc15', 'vc16', 'vc17']:
+            shutil.copyfile(
+                "buildtools/templates/Directory.build.props",
+                os.path.join(os.environ['PHYSX_ROOT_DIR'], outputDir, 'Directory.build.props')
+            )
+            file_path = os.path.join(os.environ['PHYSX_ROOT_DIR'], outputDir, 'Directory.build.props')
+            with open(file_path, 'r') as file:
+                filedata = file.read()
+            filedata = filedata.replace('%USERPROFILE%', os.environ['USERPROFILE'])
+            with open(file_path, 'w') as file:
+                file.write(filedata)
+
     else:
         configs = ['debug', 'checked', 'profile', 'release']
         for config in configs:
