@@ -45,7 +45,7 @@ ENDIF()
 # See https://docs.microsoft.com/en-us/cpp/build/reference/ox-full-optimization?view=vs-2019
 # clang-cl does not support /MP
 # clang-cl full-restricted /WX
-SET(PHYSX_COMMON_FLAGS "/d2Zi+ /W3 /GF /GS- /Gd ${PHYSX_FP_MODE} /Oy ${PHYSX_WARNING_DISABLES}")
+SET(PHYSX_COMMON_FLAGS "-fms-extensions -fms-compatibility -fdelayed-template-parsing /d2Zi+ /W3 /GF /GS- /Gd ${PHYSX_FP_MODE} /Oy ${PHYSX_WARNING_DISABLES}")
 SET(PHYSX_COMMON_FLAGS_DEBUG "/Od ${WINCRT_DEBUG} /RTCu /Zi")
 SET(PHYSX_COMMON_FLAGS_CHECKED "/O2 ${WINCRT_NDEBUG} /Zi")
 SET(PHYSX_COMMON_FLAGS_PROFILE "/O2 ${WINCRT_NDEBUG} /Zi")
