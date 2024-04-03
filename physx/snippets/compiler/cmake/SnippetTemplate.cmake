@@ -32,28 +32,50 @@
 INCLUDE(${PHYSX_ROOT_DIR}/snippets/${PROJECT_CMAKE_FILES_DIR}/${TARGET_BUILD_PLATFORM}/SnippetTemplate.cmake)
 
 STRING(TOLOWER ${SNIPPET_NAME} SNIPPET_NAME_LOWER)
-FILE(GLOB SnippetSources ${PHYSX_ROOT_DIR}/snippets/snippet${SNIPPET_NAME_LOWER}/*.cpp)
+FILE(GLOB SnippetCppSources ${PHYSX_ROOT_DIR}/snippets/snippet${SNIPPET_NAME_LOWER}/*.cpp)
+FILE(GLOB SnippetSwiftSources ${PHYSX_ROOT_DIR}/snippets/snippet${SNIPPET_NAME_LOWER}/*.swift)
 FILE(GLOB SnippetHeaders ${PHYSX_ROOT_DIR}/snippets/snippet${SNIPPET_NAME_LOWER}/*.h)
 
 ADD_EXECUTABLE(Snippet${SNIPPET_NAME} ${SNIPPET_BUNDLE}
 	${SNIPPET_PLATFORM_SOURCES}
 
-	${SnippetSources}
+	${SnippetCppSources}
+	${SnippetSwiftSources}
 	${SnippetHeaders}
 )
 
+if (SnippetSwiftSources)
+	include(AddSwift.cmake)
+	_swift_generate_cxx_header_target(
+		snippet_${SNIPPET_NAME_LOWER}_swift_h
+		Swift${SNIPPET_NAME}
+		${CMAKE_CURRENT_BINARY_DIR}/include/SwiftModule/${SNIPPET_NAME_LOWER}.h
+		SOURCES ${SnippetSwiftSources}
+		SEARCH_PATHS "${SnippetHeaders}" "${PHYSX_ROOT_DIR}/include" "${PHYSX_ROOT_DIR}/source/physxextensions/src"
+	)
+	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-cxx-interoperability-mode=default>")
+	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-parse-as-library>")
+	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-swift-version>" "$<$<COMPILE_LANGUAGE:Swift>:6>")
+	target_compile_definitions(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:__clang__>")
+	# mangling結果とgenerate headerで使われるmodule名が一致しないとリンクエラーになる
+	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE $<$<COMPILE_LANGUAGE:Swift>:-module-name> $<$<COMPILE_LANGUAGE:Swift>:Swift${SNIPPET_NAME}>)
+	add_dependencies(Snippet${SNIPPET_NAME} snippet_${SNIPPET_NAME_LOWER}_swift_h)
+	target_include_directories(Snippet${SNIPPET_NAME} PUBLIC ${PHYSX_ROOT_DIR}/snippets/snippet${SNIPPET_NAME_LOWER}/swiftinclude)
+endif()
+
 TARGET_INCLUDE_DIRECTORIES(Snippet${SNIPPET_NAME}
 	PRIVATE ${SNIPPET_PLATFORM_INCLUDES}
-	
-	PRIVATE ${PHYSX_ROOT_DIR}/include/
+
+	PRIVATE ${PHYSX_ROOT_DIR}/include
 	PRIVATE ${PHYSX_ROOT_DIR}/source/physxextensions/src
+	PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
 TARGET_COMPILE_DEFINITIONS(Snippet${SNIPPET_NAME}
 	PRIVATE ${SNIPPET_COMPILE_DEFS}
 )
 
-SET_TARGET_PROPERTIES(Snippet${SNIPPET_NAME} PROPERTIES 
+SET_TARGET_PROPERTIES(Snippet${SNIPPET_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PX_EXE_OUTPUT_DIRECTORY_DEBUG}${EXE_PLATFORM_DIR}
     RUNTIME_OUTPUT_DIRECTORY_PROFILE ${PX_EXE_OUTPUT_DIRECTORY_PROFILE}${EXE_PLATFORM_DIR}
     RUNTIME_OUTPUT_DIRECTORY_CHECKED ${PX_EXE_OUTPUT_DIRECTORY_CHECKED}${EXE_PLATFORM_DIR}
@@ -68,18 +90,19 @@ ELSE()
 	SET(PVDRuntime_Lib "")
 ENDIF()
 
-TARGET_LINK_LIBRARIES(Snippet${SNIPPET_NAME} 
+TARGET_LINK_LIBRARIES(Snippet${SNIPPET_NAME}
 	PUBLIC PhysXExtensions PhysXPvdSDK PhysX PhysXVehicle PhysXVehicle2 PhysXCharacterKinematic PhysXCooking PhysXCommon PhysXFoundation SnippetUtils ${PVDRuntime_Lib}
 	PUBLIC ${SNIPPET_PLATFORM_LINKED_LIBS})
 
 IF(CUSTOM_SNIPPET_TARGET_PROPERTIES)
-	SET_TARGET_PROPERTIES(Snippet${SNIPPET_NAME} PROPERTIES 
+	SET_TARGET_PROPERTIES(Snippet${SNIPPET_NAME} PROPERTIES
 	   ${CUSTOM_SNIPPET_TARGET_PROPERTIES}
 	)
 ENDIF()
 
-IF(PX_GENERATE_SOURCE_DISTRO)	
+IF(PX_GENERATE_SOURCE_DISTRO)
 	LIST(APPEND SOURCE_DISTRO_FILE_LIST ${SNIPPET_PLATFORM_SOURCES})
-	LIST(APPEND SOURCE_DISTRO_FILE_LIST ${SnippetSources})
+	LIST(APPEND SOURCE_DISTRO_FILE_LIST ${SnippetCppSources})
+	LIST(APPEND SOURCE_DISTRO_FILE_LIST ${SnippetSwiftSources})
 	LIST(APPEND SOURCE_DISTRO_FILE_LIST ${SnippetHeaders})
 ENDIF()

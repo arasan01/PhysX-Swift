@@ -1,0 +1,3 @@
+module SnippetHelloWorldModule {
+  header "bridge.h"
+}

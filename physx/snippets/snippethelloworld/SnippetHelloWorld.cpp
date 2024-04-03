@@ -24,7 +24,7 @@
 //
 // Copyright (c) 2008-2023 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 // ****************************************************************************
 // This snippet illustrates simple use of physx
@@ -38,6 +38,7 @@
 #include "../snippetcommon/SnippetPrint.h"
 #include "../snippetcommon/SnippetPVD.h"
 #include "../snippetutils/SnippetUtils.h"
+#include <SwiftModule/helloworld.h>
 
 using namespace physx;
 
@@ -119,7 +120,7 @@ void stepPhysics(bool /*interactive*/)
 	gScene->simulate(1.0f/60.0f);
 	gScene->fetchResults(true);
 }
-	
+
 void cleanupPhysics(bool /*interactive*/)
 {
 	PX_RELEASE(gScene);
@@ -132,7 +133,7 @@ void cleanupPhysics(bool /*interactive*/)
 		PX_RELEASE(transport);
 	}
 	PX_RELEASE(gFoundation);
-	
+
 	printf("SnippetHelloWorld done.\n");
 }
 
@@ -147,6 +148,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 int snippetMain(int, const char*const*)
 {
+	SwiftHelloWorld::helloPhysX();
 #ifdef RENDER_SNIPPET
 	extern void renderLoop();
 	renderLoop();

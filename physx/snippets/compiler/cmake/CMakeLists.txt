@@ -24,8 +24,11 @@
 ##
 ## Copyright (c) 2008-2023 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.7)
-project(Snippets C CXX)
+cmake_minimum_required(VERSION 3.29)
+cmake_policy(SET CMP0156 NEW)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(Snippets C CXX Swift)
+add_compile_options($<$<COMPILE_LANGUAGE:Swift>:-index-store-path> $<$<COMPILE_LANGUAGE:Swift>:${CMAKE_BINARY_DIR}/IndexStore/index>)
 
 # This is required to be defined by external callers!
 IF(NOT DEFINED PHYSX_ROOT_DIR)
@@ -89,10 +92,10 @@ ENDIF()
 IF ((PUBLIC_RELEASE OR PX_GENERATE_GPU_PROJECTS) AND (NOT CMAKE_CROSSCOMPILING))
 	LIST(APPEND SNIPPETS_LIST ${GPU_SNIPPET_LIST})
 ENDIF()
-	
+
 SET(SNIPPETS_VEHICLE2_LIST Vehicle2DirectDrive Vehicle2FourWheelDrive Vehicle2TankDrive Vehicle2CustomSuspension Vehicle2Multithreading Vehicle2Truck Vehicle2CustomTire)
 LIST(APPEND SNIPPETS_VEHICLE2_LIST ${PLATFORM_SNIPPETS_VEHICLE2_LIST})
-	
+
 IF(SNIPPET_RENDER_ENABLED)
 	INCLUDE(SnippetRender.cmake)
 	SET_PROPERTY(TARGET SnippetRender PROPERTY FOLDER "Snippets/Libraries only")
