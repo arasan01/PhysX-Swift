@@ -1,0 +1,43 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "options": {
+    "shell": {
+      "executable": "C:\\Windows\\System32\\cmd.exe",
+      "args": ["/d", "/c", "chcp 65001 && \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\" &&"]
+    }
+  },
+  "tasks": [
+    {
+      "label": "Configure: CMake Project",
+      "type": "shell",
+      "command": "${workspaceFolder}/generate_projects.bat ninjawin64",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+    },
+    {
+      "label": "Build: CMake Project",
+      "type": "shell",
+      "command": "cmake --build ${workspaceFolder}/compiler/ninjawin64 --config checked --target SnippetHelloWorld",
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+    },
+    {
+      "label": "Configure and Build: CMake Project",
+      "dependsOn": ["Configure: CMake Project", "Build: CMake Project"],
+      "dependsOrder": "sequence",
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+    }
+  ]
+}

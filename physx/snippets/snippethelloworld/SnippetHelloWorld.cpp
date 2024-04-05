@@ -148,7 +148,6 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 int snippetMain(int, const char*const*)
 {
-	SwiftHelloWorld::helloPhysX();
 #ifdef RENDER_SNIPPET
 	extern void renderLoop();
 	renderLoop();

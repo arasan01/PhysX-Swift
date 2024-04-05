@@ -41,8 +41,8 @@ namespace physx
 #endif
 
 // Needed for clang 7
-#if PX_CLANG && PX_CLANG_MAJOR >= 7
- #define USE_VOLATILE_UNION volatile 
+#if (PX_CLANG || PX_CLANG_CL) && PX_CLANG_MAJOR >= 7
+ #define USE_VOLATILE_UNION volatile
 #else
  #define USE_VOLATILE_UNION
 #endif

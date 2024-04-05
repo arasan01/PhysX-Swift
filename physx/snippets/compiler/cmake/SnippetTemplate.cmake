@@ -53,10 +53,14 @@ if (SnippetSwiftSources)
 		SOURCES ${SnippetSwiftSources}
 		SEARCH_PATHS "${SnippetHeaders}" "${PHYSX_ROOT_DIR}/include" "${PHYSX_ROOT_DIR}/source/physxextensions/src"
 	)
-	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-cxx-interoperability-mode=default>")
-	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-parse-as-library>")
-	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-swift-version>" "$<$<COMPILE_LANGUAGE:Swift>:6>")
-	target_compile_definitions(Snippet${SNIPPET_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:__clang__>")
+	set(CMAKE_Swift_FLAGS "${CMAKE_Swift_FLAGS} -cxx-interoperability-mode=default -parse-as-library -swift-version 6")
+	get_target_property(CXX_DEFINES Snippet${SNIPPET_NAME} COMPILE_DEFINITIONS)
+
+	foreach(d ${CXX_DEFINES})
+		message(STATUS "CXX_FLAGS: ${d}")
+		set(CMAKE_Swift_FLAGS "${CMAKE_Swift_FLAGS} -Xcc ${d}")
+	endforeach()
+
 	# mangling結果とgenerate headerで使われるmodule名が一致しないとリンクエラーになる
 	target_compile_options(Snippet${SNIPPET_NAME} PRIVATE $<$<COMPILE_LANGUAGE:Swift>:-module-name> $<$<COMPILE_LANGUAGE:Swift>:Swift${SNIPPET_NAME}>)
 	add_dependencies(Snippet${SNIPPET_NAME} snippet_${SNIPPET_NAME_LOWER}_swift_h)
